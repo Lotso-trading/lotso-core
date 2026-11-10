@@ -1,0 +1,16 @@
+node_modules/
+.deno/
+dist/
+coverage/
+.env
+*.log
+graphify-out/
+.DS_Store
+**/.DS_Store
+
+# Internal specifications
+SPEC.md
+**/SPEC.md
+
+.agents/
+.vscode/

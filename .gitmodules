@@ -1,0 +1,21 @@
+[submodule "packages/shared"]
+	path = packages/shared
+	url = https://github.com/Lotso-trading/shared.git
+	branch = develop
+	ignore = dirty
+[submodule "services/api"]
+	path = services/api
+	url = https://github.com/Lotso-trading/api.git
+	branch = develop
+	ignore = dirty
+[submodule "services/bot"]
+	path = services/bot
+	url = https://github.com/Lotso-trading/bot.git
+	branch = develop
+	ignore = dirty
+[submodule "services/dashboard"]
+	path = services/dashboard
+	url = https://github.com/Lotso-trading/dashboard.git
+	branch = develop
+	ignore = dirty
+

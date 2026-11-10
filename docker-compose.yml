@@ -1,0 +1,79 @@
+services:
+  mongodb:
+    image: mongo:7-jammy
+    container_name: polymarket-mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME:-root}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD:-example}
+      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE:-polymarket_copy}
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - polymarket-net
+    ports:
+      - "27017:27017"
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: services/api/Dockerfile
+    container_name: polymarket-api
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      MONGODB_URI: mongodb://${MONGO_INITDB_ROOT_USERNAME:-root}:${MONGO_INITDB_ROOT_PASSWORD:-example}@mongodb:27017/${MONGO_INITDB_DATABASE:-polymarket_copy}?authSource=admin
+      API_PORT: 3000
+      API_HOST: 0.0.0.0
+      WS_PORT: 3001
+    ports:
+      - "3000:3000"
+      - "3001:3001"
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - polymarket-net
+
+  bot:
+    build:
+      context: .
+      dockerfile: services/bot/Dockerfile
+    container_name: polymarket-bot
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      API_INTERNAL_URL: http://api:3000
+    depends_on:
+      api:
+        condition: service_started
+    networks:
+      - polymarket-net
+
+  dashboard:
+    build:
+      context: .
+      dockerfile: services/dashboard/Dockerfile
+    container_name: polymarket-dashboard
+    restart: unless-stopped
+    ports:
+      - "5173:80"
+    depends_on:
+      - api
+    networks:
+      - polymarket-net
+
+networks:
+  polymarket-net:
+    driver: bridge
+
+volumes:
+  mongodb_data:
+    driver: local
