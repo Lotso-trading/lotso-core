@@ -1,6 +1,6 @@
 services:
   mongodb:
-    image: mongo:7-jammy
+    image: mongo:latest
     container_name: polymarket-mongodb
     restart: unless-stopped
     environment:
@@ -51,6 +51,7 @@ services:
       - .env
     environment:
       API_INTERNAL_URL: http://api:3000
+      API_WS_URL: ws://api:3001
     depends_on:
       api:
         condition: service_started
