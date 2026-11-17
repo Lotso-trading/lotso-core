@@ -12,7 +12,10 @@
   "tasks": {
     "test": "deno test -A --unsafe-proto",
     "lint": "biome check .",
+    "lint:fix": "biome check --write .",
     "format": "biome format --write .",
+    "update:deps": "./scripts/update-dependencies.sh",
+    "update:check": "./scripts/check-updates.sh",
     "check": "deno check packages/*/src/**/*.ts services/*/src/**/*.ts",
     "docker:dev": "docker compose up -d --build",
     "docker:down": "docker compose down",

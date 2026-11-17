@@ -11,8 +11,6 @@ services:
       - mongodb_data:/data/db
     networks:
       - polymarket-net
-    ports:
-      - "27017:27017"
     healthcheck:
       test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
       interval: 10s
