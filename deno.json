@@ -11,8 +11,8 @@
   },
   "tasks": {
     "test": "deno test -A --unsafe-proto",
-    "lint": "biome check .",
-    "lint:fix": "biome check --write .",
+    "lint": "./scripts/lint.sh",
+    "lint:fix": "./scripts/lint.sh --fix",
     "format": "biome format --write .",
     "update:deps": "./scripts/update-dependencies.sh",
     "update:check": "./scripts/check-updates.sh",

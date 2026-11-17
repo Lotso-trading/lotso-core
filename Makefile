@@ -38,11 +38,11 @@ install: ## Synchronise les dépendances Deno et le lockfile
 ## Qualité de Code, Linting & Tests
 ## ==============================================================================
 
-lint: ## Vérifie le format et le code avec Biome sur tous les projets
-	@./scripts/lint.sh
+lint: ## Vérifie avec Biome tous les projets dans packages et services
+	@./scripts/lint.sh $(TARGET)
 
-lint-fix: ## Corrige automatiquement les erreurs de format et de linting Biome
-	@./scripts/lint.sh --fix
+lint-fix: ## Corrige automatiquement avec Biome dans packages et services
+	@./scripts/lint.sh --fix $(TARGET)
 
 format: lint-fix ## Alias pour lint-fix
 
