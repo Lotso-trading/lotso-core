@@ -1,27 +1,37 @@
 {
-  "workspace": ["./packages/shared", "./services/api", "./services/bot", "./services/dashboard"],
-  "nodeModulesDir": "auto",
-  "compilerOptions": {
-    "strict": true,
-    "noImplicitAny": true,
-    "strictNullChecks": true,
-    "noUncheckedIndexedAccess": true,
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
-  },
-  "tasks": {
-    "test": "deno test -A --unsafe-proto",
-    "lint": "./scripts/lint.sh",
-    "lint:fix": "./scripts/lint.sh --fix",
-    "format": "biome format --write .",
-    "update:deps": "./scripts/update-dependencies.sh",
-    "update:check": "./scripts/check-updates.sh",
-    "check": "deno check packages/*/src/**/*.ts services/*/src/**/*.ts",
-    "docker:dev": "docker compose up -d --build",
-    "docker:down": "docker compose down",
-    "docker:logs": "docker compose logs -f",
-    "poly:seed": "deno run -A services/api/src/scripts/seed-targets.ts",
-    "notify:closed": "deno run -A services/api/src/scripts/notify-closed-positions.ts",
-    "bot:test-clob": "deno run -A --env-file=.env services/bot/src/scripts/test-clob-connection.ts"
-  }
+    "workspace": [
+        "./packages/shared",
+        "./services/api",
+        "./services/bot",
+        "./services/dashboard"
+    ],
+    "nodeModulesDir": "auto",
+    "minimumDependencyAge": 0,
+    "compilerOptions": {
+        "strict": true,
+        "noImplicitAny": true,
+        "strictNullChecks": true,
+        "noUncheckedIndexedAccess": true,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true
+    },
+    "tasks": {
+        "test": "deno test -A --unsafe-proto",
+        "lint": "./scripts/lint.sh",
+        "lint:fix": "./scripts/lint.sh --fix",
+        "format": "biome format --write .",
+        "update:deps": "./scripts/update-dependencies.sh",
+        "update:dev": "./scripts/update-dependencies.sh --dev",
+        "update:check": "./scripts/check-updates.sh",
+        "check": "deno check packages/*/src/**/*.ts services/*/src/**/*.ts",
+        "docker:dev": "docker compose up -d --build",
+        "docker:down": "docker compose down",
+        "docker:logs": "docker compose logs -f",
+        "poly:seed": "deno run -A services/api/src/scripts/seed-targets.ts",
+        "notify:closed": "deno run -A services/api/src/scripts/notify-closed-positions.ts",
+        "bot:test-clob": "deno run -A --env-file=.env services/bot/src/scripts/test-clob-connection.ts"
+    },
+    "imports": {
+        "@lotso-trading/shared": "npm:@lotso-trading/shared@1.0.0-develop.1"
+    }
 }

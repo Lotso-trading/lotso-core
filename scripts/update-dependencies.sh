@@ -4,6 +4,8 @@
 # Description: Met à jour les dépendances npm dans les workspaces Deno
 #              en appliquant un délai de sécurité (cooldown de 7 jours par défaut)
 #              pour se prémunir contre les attaques de chaîne d'approvisionnement.
+#              Supporte le mode --dev pour mettre à jour @lotso-trading/shared
+#              vers sa dernière version dev sur l'ensemble des services.
 # ==============================================================================
 
 set -euo pipefail
@@ -25,6 +27,7 @@ COOLDOWN_DAYS="${COOLDOWN_DAYS:-7}"
 TARGET="${TARGET:-latest}"
 DRY_RUN=false
 PROJECT=""
+DEV_MODE=false
 
 # Affichage de l'aide
 usage() {
@@ -37,7 +40,11 @@ ${BOLD}Description:${NC}
   en appliquant un cooldown de sécurité (par défaut 7 jours) pour bloquer
   les versions trop récentes potentiellement compromises.
 
+  En mode ${BOLD}--dev${NC}, met à jour le package ${BOLD}@lotso-trading/shared${NC}
+  vers la dernière version dev (tag 'dev' ou dernière pre-release) sur tous les services.
+
 ${BOLD}Options:${NC}
+  -d, --dev               Met à jour @lotso-trading/shared vers la dernière version dev sur tous les services
   -c, --cooldown <jours>  Délai de quarantaine en jours (défaut: 7)
   -n, --dry-run           Vérifie les mises à jour sans modifier les fichiers
   -t, --target <cible>    Stratégie semver (latest, minor, patch, etc. défaut: latest)
@@ -46,6 +53,7 @@ ${BOLD}Options:${NC}
 
 ${BOLD}Exemples:${NC}
   $(basename "$0")                     # Met à jour tous les projets avec cooldown 7j
+  $(basename "$0") --dev               # Met à jour @lotso-trading/shared vers la dernière version dev
   $(basename "$0") --dry-run           # Inspecte les mises à jour disponibles sans modifier
   $(basename "$0") --cooldown 14       # Applique un cooldown de 14 jours
   $(basename "$0") api                 # Met à jour uniquement services/api
@@ -56,6 +64,10 @@ EOF
 # Parsing des arguments
 while [[ $# -gt 0 ]]; do
   case "$1" in
+    -d|--dev|dev)
+      DEV_MODE=true
+      shift
+      ;;
     -c|--cooldown)
       COOLDOWN_DAYS="$2"
       shift 2
@@ -87,6 +99,101 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
+# ==============================================================================
+# Mode --dev : Mise à jour de @lotso-trading/shared sur les services
+# ==============================================================================
+if [[ "$DEV_MODE" == true ]]; then
+  echo -e "${BLUE}${BOLD}📦 Mode DEV activé : Recherche de la dernière version dev de @lotso-trading/shared...${NC}"
+
+  # Récupération de la version dev via le tag 'dev', ou dernière pre-release develop, ou latest
+  LATEST_DEV=$(npm view @lotso-trading/shared dist-tags.dev --registry=https://npm.pkg.github.com 2>/dev/null || true)
+  if [[ -z "$LATEST_DEV" ]]; then
+    LATEST_DEV=$(npm view @lotso-trading/shared versions --json --registry=https://npm.pkg.github.com 2>/dev/null | grep -o '"[^"]*develop[^"]*"' | tr -d '"' | tail -n 1 || true)
+  fi
+  if [[ -z "$LATEST_DEV" ]]; then
+    LATEST_DEV=$(npm view @lotso-trading/shared dist-tags.latest --registry=https://npm.pkg.github.com 2>/dev/null || true)
+  fi
+
+  if [[ -z "$LATEST_DEV" ]]; then
+    echo -e "${RED}❌ Impossible de déterminer la version dev de @lotso-trading/shared sur GitHub Packages.${NC}" >&2
+    exit 1
+  fi
+
+  echo -e "   • Dernière version dev détectée : ${GREEN}${BOLD}${LATEST_DEV}${NC}"
+  if [[ "$DRY_RUN" == true ]]; then
+    echo -e "   • Mode                          : ${BLUE}Lecture seule (Dry-Run)${NC}"
+  else
+    echo -e "   • Mode                          : ${GREEN}Mise à jour en place${NC}"
+  fi
+
+  # Cibles des services
+  TARGET_SERVICES=()
+  if [[ -n "$PROJECT" ]]; then
+    case "$PROJECT" in
+      api|bot|dashboard)
+        TARGET_SERVICES=("services/$PROJECT/deno.json")
+        ;;
+      *)
+        if [[ -f "services/$PROJECT/deno.json" ]]; then
+          TARGET_SERVICES=("services/$PROJECT/deno.json")
+        else
+          echo -e "${RED}Service introuvable pour la mise à jour de shared : '$PROJECT'${NC}" >&2
+          exit 1
+        fi
+        ;;
+    esac
+  else
+    TARGET_SERVICES=("services/api/deno.json" "services/bot/deno.json" "services/dashboard/deno.json")
+    if [[ -f "deno.json" ]]; then
+      TARGET_SERVICES+=("deno.json")
+    fi
+  fi
+
+  echo -e "   • Fichiers ciblés               : ${TARGET_SERVICES[*]}\n"
+
+  for SVC_FILE in "${TARGET_SERVICES[@]}"; do
+    if [[ -f "$SVC_FILE" ]]; then
+      echo -e "${BLUE}▶ Traitement de : ${SVC_FILE}${NC}"
+      if [[ "$DRY_RUN" == true ]]; then
+        echo -e "  ${YELLOW}→ Metterait à jour @lotso-trading/shared vers npm:@lotso-trading/shared@${LATEST_DEV}${NC}"
+      else
+        deno eval '
+          const filePath = Deno.args[0];
+          const newVersion = Deno.args[1];
+          const raw = await Deno.readTextFile(filePath);
+          const json = JSON.parse(raw);
+          if (json.imports) {
+            json.imports["@lotso-trading/shared"] = `npm:@lotso-trading/shared@${newVersion}`;
+            if (json.imports["@lotso-trading/shared"]) {
+              json.imports["@lotso-trading/shared"] = `npm:@lotso-trading/shared@${newVersion}`;
+            }
+          }
+          await Deno.writeTextFile(filePath, JSON.stringify(json, null, 4) + "\n");
+        ' "$SVC_FILE" "$LATEST_DEV"
+        echo -e "  ${GREEN}✓ @lotso-trading/shared mis à jour vers v${LATEST_DEV}${NC}"
+      fi
+    fi
+  done
+
+  if [[ "$DRY_RUN" == false ]]; then
+    echo -e "\n${BLUE}🔄 Synchronisation du fichier lock Deno (deno install)...${NC}"
+    if command -v deno >/dev/null 2>&1; then
+      deno install
+      echo -e "${GREEN}✅ Dépendances et deno.lock synchronisés avec succès.${NC}"
+    else
+      echo -e "${YELLOW}⚠️  Deno non trouvé dans le PATH, synchronisation du lockfile ignorée.${NC}"
+    fi
+    echo -e "\n${GREEN}🎉 Version dev de shared déployée avec succès sur tous les services ciblés !${NC}"
+  else
+    echo -e "\n${GREEN}ℹ️  Mode lecture seule terminé. Relancez sans --dry-run pour appliquer.${NC}"
+  fi
+
+  exit 0
+fi
+
+# ==============================================================================
+# Mode Standard : NCU avec cooldown de sécurité
+# ==============================================================================
 echo -e "${BLUE}${BOLD}🛡️  Vérification des dépendances (Sécurité Chaîne d'Approvisionnement)${NC}"
 echo -e "   • Cooldown de sécurité : ${YELLOW}${COOLDOWN_DAYS} jours${NC} (les paquets publiés il y a moins de ${COOLDOWN_DAYS}j sont ignorés)"
 echo -e "   • Cible semver          : ${YELLOW}${TARGET}${NC}"

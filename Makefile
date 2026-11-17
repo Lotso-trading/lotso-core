@@ -12,7 +12,7 @@ YELLOW := \033[1;33m
 BOLD   := \033[1m
 NC     := \033[0m
 
-.PHONY: help update check-update update-check lint lint-fix format check test install dev down logs
+.PHONY: help update update-dev check-update update-check lint lint-fix format check test install dev down logs
 
 help: ## Affiche ce menu d'aide
 	@echo -e "${BOLD}Commandes disponibles :${NC}"
@@ -22,8 +22,15 @@ help: ## Affiche ce menu d'aide
 ## Dépendances & Sécurité Chaîne d'Approvisionnement
 ## ==============================================================================
 
-update: ## Met à jour les dépendances (ncu -u) avec cooldown de sécurité 7 jours
-	@./scripts/update-dependencies.sh
+update: ## Met à jour les dépendances (ncu -u) ou avec option --dev via: make update -- --dev
+	@./scripts/update-dependencies.sh $(filter-out $@,$(MAKECMDGOALS))
+
+update-dev: ## Met à jour @lotso-trading/shared vers la dernière version dev sur tous les services
+	@./scripts/update-dependencies.sh --dev
+
+# Capture l'argument --dev si passé après -- (ex: make update -- --dev)
+--dev:
+	@:
 
 check-update: ## Vérifie les mises à jour disponibles en lecture seule (dry-run 7j cooldown)
 	@./scripts/check-updates.sh

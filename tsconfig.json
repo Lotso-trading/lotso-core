@@ -11,8 +11,8 @@
     "jsxImportSource": "vue",
     "baseUrl": ".",
     "paths": {
-      "@polymarket-copy/shared": ["packages/shared/src/index.ts"],
-      "@polymarket-copy/shared/*": ["packages/shared/src/*"]
+      "@lotso-trading/shared": ["packages/shared/src/index.ts"],
+      "@lotso-trading/shared/*": ["packages/shared/src/*"]
     }
   },
   "include": ["packages/*/src/**/*", "services/*/src/**/*", "services/*/src/**/*.vue"]
