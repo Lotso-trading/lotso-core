@@ -32,6 +32,6 @@
         "bot:test-clob": "deno run -A --env-file=.env services/bot/src/scripts/test-clob-connection.ts"
     },
     "imports": {
-        "@lotso-trading/shared": "npm:@lotso-trading/shared@1.0.0-develop.1"
+        "@lotso-trading/shared": "npm:@lotso-trading/shared@1.0.0"
     }
 }
