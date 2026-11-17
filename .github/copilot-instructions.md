@@ -2,7 +2,7 @@
 
 ## Repository Overview
 Polymarket Copy-Trading is a high-performance, containerized, strictly typed microservice architecture designed for real-time copy-trading on Polymarket:
-- `packages/shared` (`@polymarket-copy/shared`): Shared contracts, Zod runtime validation schemas, discriminated unions, zero-`any` strict TypeScript definitions, immutable entities (`Readonly<T>`).
+- `packages/shared` (`@lotso-trading/shared`): Shared contracts, Zod runtime validation schemas, discriminated unions, zero-`any` strict TypeScript definitions, immutable entities (`Readonly<T>`).
 - `services/api`: Enterprise backend under NestJS 12 + MongoDB (Mongoose), compound-indexed queries sub-millisecond, native aggregation pipelines (PnL, win rate, volume), real-time WebSocket Gateway broadcasting live trade events, REST CRUD for target whales & dynamic risk configuration.
 - `services/bot`: Autonomous high-frequency trading engine (Clean Architecture / Hexagonal). Hybrid real-time detection (Polymarket Data API + Polygon RPC streaming), RiskManager (slippage guard, price bounds [0.05 - 0.95], balance dynamic sizing, max allocated capital & profit reinvestment), `ALL` exit rule, non-custodial EIP-712 CLOB order execution / Dry-Run simulator, rich Discord alerts.
 - `services/dashboard`: Real-time financial UI (Vue 3.5+ Composition API `<script setup lang="ts">`, Vite 8, Pinia, Tailwind CSS), target whale administration, interactive risk control panel, live trade feed & open positions tracking.
