@@ -6,7 +6,10 @@
         "./services/dashboard"
     ],
     "nodeModulesDir": "auto",
-    "minimumDependencyAge": 0,
+    "minimumDependencyAge": {
+        "age": "P1D",
+        "exclude": ["npm:@lotso-trading/shared"]
+    },
     "compilerOptions": {
         "strict": true,
         "noImplicitAny": true,
@@ -23,6 +26,7 @@
         "update:deps": "./scripts/update-dependencies.sh",
         "update:dev": "./scripts/update-dependencies.sh --dev",
         "update:check": "./scripts/check-updates.sh",
+        "build:copie": "deno task --cwd packages/shared build:npm && deno run -A scripts/copy-shared.ts",
         "check": "deno check packages/*/src/**/*.ts services/*/src/**/*.ts",
         "docker:dev": "docker compose up -d --build",
         "docker:down": "docker compose down",
@@ -32,6 +36,6 @@
         "bot:test-clob": "deno run -A --env-file=.env services/bot/src/scripts/test-clob-connection.ts"
     },
     "imports": {
-        "@lotso-trading/shared": "npm:@lotso-trading/shared@1.0.0"
+        "@lotso-trading/shared": "npm:@lotso-trading/shared@1.0.0-develop.5"
     }
 }

@@ -12,7 +12,7 @@ YELLOW := \033[1;33m
 BOLD   := \033[1m
 NC     := \033[0m
 
-.PHONY: help update update-dev check-update update-check lint lint-fix format check test install dev down logs
+.PHONY: help update update-dev check-update update-check lint lint-fix format check test install dev down logs build-shared
 
 help: ## Affiche ce menu d'aide
 	@echo -e "${BOLD}Commandes disponibles :${NC}"
@@ -40,6 +40,10 @@ update-check: check-update ## Alias pour check-update
 install: ## Synchronise les dépendances Deno et le lockfile
 	@echo -e "${BLUE}▶ Synchronisation des dépendances Deno...${NC}"
 	@deno install
+
+build-shared: ## Compile packages/shared et copie le build dans node_modules/@lotso-trading/shared
+	@echo -e "${BLUE}▶ Build et copie de @lotso-trading/shared...${NC}"
+	@deno run build:copie
 
 ## ==============================================================================
 ## Qualité de Code, Linting & Tests

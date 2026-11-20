@@ -21,6 +21,8 @@ services:
     build:
       context: .
       dockerfile: services/api/Dockerfile
+      secrets:
+        - github_token
     container_name: polymarket-api
     restart: unless-stopped
     env_file:
@@ -43,6 +45,8 @@ services:
     build:
       context: .
       dockerfile: services/bot/Dockerfile
+      secrets:
+        - github_token
     container_name: polymarket-bot
     restart: unless-stopped
     env_file:
@@ -76,3 +80,7 @@ networks:
 volumes:
   mongodb_data:
     driver: local
+
+secrets:
+  github_token:
+    environment: GITHUB_TOKEN

@@ -7,7 +7,16 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "includes": ["packages/**", "services/**", "*.json", "*.ts", "*.js", "*.vue"]
+    "includes": [
+      "packages/**",
+      "services/**",
+      "scripts/**",
+      "*.json",
+      "*.ts",
+      "*.js",
+      "*.vue",
+      "!packages/shared/npm/**"
+    ]
   },
   "formatter": {
     "enabled": true,

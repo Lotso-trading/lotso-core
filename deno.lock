@@ -15,7 +15,7 @@
     "jsr:@ts-morph/common@0.29": "0.29.0",
     "npm:@biomejs/biome@*": "2.6.8",
     "npm:@biomejs/biome@2.6.8": "2.6.8",
-    "npm:@lotso-trading/shared@1.0.0": "1.0.0",
+    "npm:@lotso-trading/shared@1.0.0-develop.5": "1.0.0-develop.5",
     "npm:@nestjs/common@^12.5.1": "12.5.1_reflect-metadata@0.2.2_rxjs@7.8.2",
     "npm:@nestjs/core@^12.5.1": "12.5.1_@nestjs+common@12.5.1_@nestjs+platform-express@12.5.1_reflect-metadata@0.2.2_rxjs@7.8.2",
     "npm:@nestjs/mongoose@^12.0.1": "12.0.1_@nestjs+common@12.5.1_@nestjs+core@12.5.1_mongoose@9.12.2_rxjs@7.8.2_@nestjs+platform-express@12.5.1_reflect-metadata@0.2.2",
@@ -30,7 +30,7 @@
     "npm:pinia@^4.1.0": "4.1.0_@vue+devtools-api@8.2.1_vue@3.5.45",
     "npm:reflect-metadata@~0.2.2": "0.2.2",
     "npm:rxjs@^7.8.2": "7.8.2",
-    "npm:viem@^2.58.0": "2.58.0_zod@4.6.7",
+    "npm:viem@^2.58.0": "2.58.1_zod@4.6.7",
     "npm:vite@*": "8.3.8",
     "npm:vite@^8.3.8": "8.3.8",
     "npm:vue@^3.5.45": "3.5.45",
@@ -205,12 +205,12 @@
     "@jridgewell/sourcemap-codec@1.6.0": {
       "integrity": "sha512-T7jf+5zgsZHwNJ4lvQ7/aezbyk0nNX+zJVWpmHA7VYsEx7a7qr5Rg5IbtJFqkgze5Y2sruq1RUY8Q837Od7iFw=="
     },
-    "@lotso-trading/shared@1.0.0": {
-      "integrity": "sha512-TPM0LYfTrmwF5ZoFDk9+9O9Za7nCleYW4zKBPrqjKAdreR74dACXMg1mQnfYHdsDLidQKOC9R7LbQW8CrGqu/A==",
+    "@lotso-trading/shared@1.0.0-develop.5": {
+      "integrity": "sha512-y7k2RI2w7CyDYRyQiRcd4M+ufHpz/w5LeE8W7lG8Awuu4EWCMxscm3MTx14Dxq93CxUbYvzR57eA/4ozPLxK6A==",
       "dependencies": [
         "zod"
       ],
-      "tarball": "https://npm.pkg.github.com/download/@lotso-trading/shared/1.0.0/e09074329ee1cb5d93018a445016767fd6c65532"
+      "tarball": "https://npm.pkg.github.com/download/@lotso-trading/shared/1.0.0-develop.5/a99479c508c797c5f3662604544d06fcf9df35bb"
     },
     "@lukeed/csprng@1.1.0": {
       "integrity": "sha512-Z7C/xXCiGWsg0KuKsHTKJxbWhpI3Vs5GwLfOean7MGyVFGqdRgBbAjOCh6u4bbjPc/8MJ2pZmK/0DLdCbivLDA=="
@@ -1404,8 +1404,8 @@
     "vary@1.1.2": {
       "integrity": "sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg=="
     },
-    "viem@2.58.0_zod@4.6.7": {
-      "integrity": "sha512-oBGZGy6VptLmAATtEua71a7FzCXT5y74dQoeDP8EDHmBsWhQ34rXeHKz6tHeciKWnJ3zBT1u8sby8tAtg0gouA==",
+    "viem@2.58.1_zod@4.6.7": {
+      "integrity": "sha512-8qzo5+rbG4Sr9/MvUit9g0r/0H25suExk5WEBOzqXoTu7nYfm8EpgCTtpqQAlu8HkBmz96clZHfN7RkXKT3a1g==",
       "dependencies": [
         "@noble/curves@1.9.1",
         "@noble/hashes@1.8.0",
@@ -1466,7 +1466,7 @@
   },
   "workspace": {
     "dependencies": [
-      "npm:@lotso-trading/shared@1.0.0"
+      "npm:@lotso-trading/shared@1.0.0-develop.5"
     ],
     "members": {
       "packages/shared": {
@@ -1476,7 +1476,7 @@
       },
       "services/api": {
         "dependencies": [
-          "npm:@lotso-trading/shared@1.0.0",
+          "npm:@lotso-trading/shared@1.0.0-develop.5",
           "npm:@nestjs/common@^12.5.1",
           "npm:@nestjs/core@^12.5.1",
           "npm:@nestjs/mongoose@^12.0.1",
@@ -1490,7 +1490,7 @@
       },
       "services/bot": {
         "dependencies": [
-          "npm:@lotso-trading/shared@1.0.0",
+          "npm:@lotso-trading/shared@1.0.0-develop.5",
           "npm:@polymarket/clob-client@^5.8.1",
           "npm:axios@^1.21.1",
           "npm:ethers@^6.17.0",
@@ -1501,7 +1501,7 @@
       },
       "services/dashboard": {
         "dependencies": [
-          "npm:@lotso-trading/shared@1.0.0",
+          "npm:@lotso-trading/shared@1.0.0-develop.5",
           "npm:@vitejs/plugin-vue@^6.0.11",
           "npm:lucide-vue-next@1",
           "npm:pinia@^4.1.0",
